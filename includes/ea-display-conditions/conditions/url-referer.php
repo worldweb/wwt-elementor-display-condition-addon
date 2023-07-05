@@ -2,24 +2,15 @@
 /**
  * Url_Referer Condition Handler.
  */
-
 namespace WwtAddons\Includes\EA_Display_Conditions\Conditions;
-
-// Elementor Classes.
 use Elementor\Controls_Manager;
-
-// PA Classes.
 use WwtAddons\Includes\Helper_Functions_WWT;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-/**
- * Class Url_Referer.
- */
 class Url_Referer extends Condition_WWT {
-
 	
 	public function get_control_options() {
 

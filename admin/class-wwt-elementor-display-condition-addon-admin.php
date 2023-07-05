@@ -44,14 +44,15 @@ class Wwt_Elementor_Display_Condition_Addon_Admin {
 		$element->start_controls_section(
 			'section_pa_display_conditions_wwt',
 			array(
-				'label' => sprintf( '%s', __( 'WWT Display Conditions', 'premium-addons-for-elementor' ) ),
+				'label' => sprintf( '%s', __( 'WWT Display Conditions', 'wwt-elementor-disp-cond-addon' ) ),
 				'tab'   => Controls_Manager::TAB_ADVANCED,
 			)
 		);
 
 		$controls_obj = new EA_Controls_Handler_WWT();
 
-		$options = $controls_obj::$conditions;
+		$options = $controls_obj::$conditions;	
+
 
 		$element->add_control(
 			'pa_display_conditions_switcher_wwt',
@@ -69,12 +70,12 @@ class Wwt_Elementor_Display_Condition_Addon_Admin {
 		$element->add_control(
 			'pa_display_action_wwt',
 			array(
-				'label'     => __( 'Action', 'premium-addons-for-elementor' ),
+				'label'     => __( 'Action', 'wwt-elementor-disp-cond-addon' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'show',
 				'options'   => array(
-					'show' => __( 'Show Element', 'premium-addons-for-elementor' ),
-					'hide' => __( 'Hide Element', 'premium-addons-for-elementor' ),
+					'show' => __( 'Show Element', 'wwt-elementor-disp-cond-addon' ),
+					'hide' => __( 'Hide Element', 'wwt-elementor-disp-cond-addon' ),
 				),
 				'condition' => array(
 					'pa_display_conditions_switcher_wwt' => 'yes',
@@ -85,12 +86,12 @@ class Wwt_Elementor_Display_Condition_Addon_Admin {
 		$element->add_control(
 			'pa_display_when_wwt',
 			array(
-				'label'     => __( 'Display When', 'premium-addons-for-elementor' ),
+				'label'     => __( 'Display When', 'wwt-elementor-disp-cond-addon' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'any',
 				'options'   => array(
-					'all' => __( 'All Conditions Are Met', 'premium-addons-for-elementor' ),
-					'any' => __( 'Any Condition is Met', 'premium-addons-for-elementor' ),
+					'all' => __( 'All Conditions Are Met', 'wwt-elementor-disp-cond-addon' ),
+					'any' => __( 'Any Condition is Met', 'wwt-elementor-disp-cond-addon' ),
 				),
 				'condition' => array(
 					'pa_display_conditions_switcher_wwt' => 'yes',
@@ -100,12 +101,28 @@ class Wwt_Elementor_Display_Condition_Addon_Admin {
 
 		$repeater = new Repeater();
 
-		$options = array('url_referer' => __( 'URL Parameters', 'premium-addons-for-elementor' ));
+		if ( class_exists( 'woocommerce' ) ) {
+			$options = array_merge(
+				$options,
+				array(
+					'woocommerce' => array(
+						'label'   => __( 'WooCommerce', 'wwt-elementor-disp-cond-addon' ),
+						'options' => array(							
+							'woo_orders'        => __( 'Purchased/In Cart Orders', 'wwt-elementor-disp-cond-addon' ),
+							'woo_category'      => __( 'Purchased/In Cart Categories', 'wwt-elementor-disp-cond-addon' ),
+							'woo_last_purchase' => __( 'Last Purchase In Cart', 'wwt-elementor-disp-cond-addon' ),
+							'woo_total_price'   => __( 'Amount In Cart', 'wwt-elementor-disp-cond-addon' ),
+							'woo_cart_products' => __( 'Products In Cart', 'wwt-elementor-disp-cond-addon' ),
+						),
+					),
+				)
+			);
+		}
 
 		$repeater->add_control(
 			'pa_condition_key_wwt',
 			array(
-				'label'       => __( 'Type', 'premium-addons-for-elementor' ),
+				'label'       => __( 'Type', 'wwt-elementor-disp-cond-addon' ),
 				'type'        => Controls_Manager::SELECT,
 				'groups'      => $options,
 				'default'     => 'url_referer',
@@ -116,7 +133,12 @@ class Wwt_Elementor_Display_Condition_Addon_Admin {
 		$options_conditions = apply_filters(
 			'pa_pro_display_conditions_wwt',
 			array(				
-				'url_referer'				
+				'url_referer',
+				'woo_total_price',
+				'woo_cart_products',
+				'woo_orders',
+				'url_string',
+				'shortcode'		
 			)
 		);
 		
@@ -130,8 +152,8 @@ class Wwt_Elementor_Display_Condition_Addon_Admin {
 				'default'     => 'is',
 				'label_block' => true,
 				'options'     => array(
-					'is'  => __( 'Is', 'premium-addons-for-elementor' ),
-					'not' => __( 'Is Not', 'premium-addons-for-elementor' ),
+					'is'  => __( 'Is', 'wwt-elementor-disp-cond-addon' ),
+					'not' => __( 'Is Not', 'wwt-elementor-disp-cond-addon' ),
 				),
 				'condition'   => array(
 					'pa_condition_key_wwt!' => $options_conditions,
@@ -144,15 +166,11 @@ class Wwt_Elementor_Display_Condition_Addon_Admin {
 		$should_apply = apply_filters( 'pa_display_conditions_values_wwt', true );
 
 		$values = $repeater->get_controls();
-
-		if ( $should_apply ) {
-			$values = array_values( $values );
-		}
-
+		
 		$element->add_control(
 			'pa_condition_repeater_wwt',
 			array(
-				'label'         => __( 'Conditions', 'premium-addons-for-elementor' ),
+				'label'         => __( 'Conditions', 'wwt-elementor-disp-cond-addon' ),
 				'type'          => Controls_Manager::REPEATER,
 				'label_block'   => true,
 				'fields'        => $values,

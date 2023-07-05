@@ -9,7 +9,7 @@
  * @wordpress-plugin
  * Plugin Name:       WWT Elementor Display Condition
  * Plugin URI:        https://worldwebtechnology.com
- * Description:       WWT Elementor Display Condition allows to display section based on query parameter in URL.
+ * Description:       It display or hide element/section of elementor based on conditions that is selected on type of the condition. It has type of conditions like URL Parameters, String in URL, Shortcode. If Woocommerce Plugin is active, it also supports conditions for Woocommerce like Purchased/In Cart Orders, Purchased/In Cart Categories, Last Purchase In Cart, Amount In Cart, Products In Cart.
  * Version:           1.0.0
  * Author:            world web technology
  * Author URI:        https://worldwebtechnology.com
@@ -53,6 +53,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wwt-elementor-display-cond
 require_once plugin_dir_path( __FILE__ ) . 'includes/ea-display-conditions/ea-controls-handler-wwt.php';
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/helper-functions.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-premium-template-tags-wwt.php';
 
 
 function run_wwt_elementor_disp_cond_addon() {

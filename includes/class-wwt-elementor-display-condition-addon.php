@@ -62,6 +62,7 @@ class Wwt_Elementor_Display_Condition_Addon {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		$this->loader->add_action( 'elementor/element/container/section_layout/after_section_end', $plugin_admin, 'wwt_register_controls_disp_cond',99);
 		$this->loader->add_action( 'elementor/element/section/section_advanced/after_section_end', $plugin_admin, 'wwt_register_controls_disp_cond',99);
 		$this->loader->add_action( 'elementor/element/column/section_advanced/after_section_end', $plugin_admin, 'wwt_register_controls_disp_cond',99);
 		$this->loader->add_action( 'elementor/element/common/_section_style/after_section_end', $plugin_admin, 'wwt_register_controls_disp_cond',99);

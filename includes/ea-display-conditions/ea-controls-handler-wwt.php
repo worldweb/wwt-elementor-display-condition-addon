@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; 
 }
 
-class EA_Controls_Handler_WWT {
+class EA_Controls_Handler_WWT { 
 
 	
 	public static $conditions_classes = array();
@@ -39,8 +39,16 @@ class EA_Controls_Handler_WWT {
 				'label'   => __( 'URL', 'wwt-elementor-disp-cond-addon' ),
 				'options' => array(					
 					'url_referer' => __( 'URL Parameters', 'wwt-elementor-disp-cond-addon' ),
+					'url_string'  => __( 'String in URL', 'wwt-elementor-disp-cond-addon' ),
 				),
-			)			
+			),
+
+			'misc'      => array(
+				'label'   => __( 'Misc (PRO)', 'premium-addons-for-elementor' ),
+				'options' => array(
+					'shortcode' => __( 'Shortcode', 'premium-addons-for-elementor' ),
+				),
+			),			
 
 		);
 
@@ -48,12 +56,28 @@ class EA_Controls_Handler_WWT {
 	
 	public function init_conditions_classes() {
 
-		self::$conditions_keys = apply_filters(
-			'pa_display_conditions_keys',
-			array(
-				'url_referer'
-			)
-		);		
+		$conds = array(
+			'url_referer',				
+			'url_string',
+			'shortcode'
+		);
+
+		$woo_conds = array(				
+			'woo_total_price',
+			'woo_cart_products',
+			'woo_orders',
+			'woo_category',
+			'woo_last_purchase'
+		);
+
+
+		if ( class_exists( 'woocommerce' ) ) {
+
+			$conds = array_merge($conds,$woo_conds);
+
+		}
+
+		self::$conditions_keys = apply_filters('pa_display_conditions_keys', $conds);
 
 		include_once WWT_ELEMENTOR_DISPLAY_CONDITION_ADDON_PATH. 'includes/ea-display-conditions/conditions/condition.php';	
 
@@ -68,10 +92,47 @@ class EA_Controls_Handler_WWT {
 			}	
 			
 
-			$class_name = __NAMESPACE__ . 'WwtAddons\Includes\EA_Display_Conditions\Conditions\\'.'Url_Referer';	
 
-			if ( class_exists( $class_name ) ) {
+			$class_name = str_replace( '-', ' ', $condition_key );
+			$class_name = str_replace( ' ', '', ucwords( $class_name ) );
 				
+
+			if($condition_key=='url_referer'){
+				$class_name = __NAMESPACE__ . 'WwtAddons\Includes\EA_Display_Conditions\Conditions\\'.'Url_Referer';	
+			}
+			else if($condition_key=='woo_total_price'){
+
+				$class_name = __NAMESPACE__ . 'WwtAddons\Includes\EA_Display_Conditions\Conditions\\'.'Woo_Total_Price';	
+			}
+			else if($condition_key=='woo_cart_products'){
+
+				$class_name = __NAMESPACE__ . 'WwtAddons\Includes\EA_Display_Conditions\Conditions\\'.'Woo_Cart_Products';	
+			}
+			else if($condition_key=='woo_orders'){
+
+				$class_name = __NAMESPACE__ . 'WwtAddons\Includes\EA_Display_Conditions\Conditions\\'.'Woo_Orders';	
+			}
+			else if($condition_key=='woo_category'){
+
+				$class_name = __NAMESPACE__ . 'WwtAddons\Includes\EA_Display_Conditions\Conditions\\'.'Woo_Category';	
+			}
+			else if($condition_key=='woo_last_purchase'){
+
+				$class_name = __NAMESPACE__ . 'WwtAddons\Includes\EA_Display_Conditions\Conditions\\'.'Woo_Last_Purchase';	
+			}
+			else if($condition_key=='url_string'){
+
+				$class_name = __NAMESPACE__ . 'WwtAddons\Includes\EA_Display_Conditions\Conditions\\'.'Url_String';
+			}
+			else{
+
+				$class_name = __NAMESPACE__ . 'WwtAddons\Includes\EA_Display_Conditions\Conditions\\'.$class_name;
+
+			}
+
+
+			if ( class_exists( $class_name ) ) {					
+
 				static::$conditions_classes[ $condition_key ] = new $class_name();
 			}
 			
@@ -98,6 +159,7 @@ class EA_Controls_Handler_WWT {
 			$control_id = 'pa_condition_' . $condition_class_name;
 
 			if ( in_array( $control_id, $additional_ids, true ) ) {
+
 				$repeater->add_control(
 					'pa_condition_val' . $condition_class_name,
 					$condition_obj->add_value_control()
@@ -106,7 +168,7 @@ class EA_Controls_Handler_WWT {
 		}
 	}
 	
-	public function add_repeater_compare_controls( $repeater ) {
+	public function add_repeater_compare_controls( $repeater ) {		
 
 		foreach ( static::$conditions_classes as $condition_class_name => $condition_obj ) {
 
